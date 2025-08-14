@@ -1,0 +1,87 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background: #f4f7f8;
+    margin: 0;
+    padding: 0 20px;
+}
+
+header {
+    background: #2c3e50;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+main {
+    margin-top: 20px;
+}
+
+.stats-panel {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.stat-card {
+    background: #fff;
+    padding: 20px 30px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+.stat-card h2 { margin: 0 0 10px 0; font-size: 18px; color: #333; }
+.stat-card p { margin: 0; font-size: 24px; font-weight: bold; color: #2c3e50; }
+
+.alerts-panel {
+    margin-top: 40px;
+}
+
+.alerts-panel h2 {
+    margin-bottom: 15px;
+    color: #2c3e50;
+}
+
+#alert-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.alert-card {
+    background: #fff;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+}
+
+.alert-card:hover {
+    transform: translateY(-3px);
+}
+
+.alert-img {
+    margin-top: 10px;
+    max-width: 250px;
+    border-radius: 5px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* Blink animation for urgent alerts */
+@keyframes blink-animation {
+    0% { opacity: 1; }
+    50% { opacity: 0.3; }
+    100% { opacity: 1; }
+}
+
+.blink {
+    animation: blink-animation 1s infinite;
+}

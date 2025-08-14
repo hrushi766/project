@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Drowsiness Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Drowsiness Monitor Dashboard</h1>
+    </header>
+    <main>
+        <section class="stats-panel">
+            <div class="stat-card">
+                <h2>Total Blinks</h2>
+                <p id="blink-count">0</p>
+            </div>
+            <div class="stat-card">
+                <h2>Total Yawns</h2>
+                <p id="yawn-count">0</p>
+            </div>
+            <div class="stat-card">
+                <h2>Critical Alerts</h2>
+                <p id="critical-count">0</p>
+            </div>
+        </section>
+
+        <section class="alerts-panel">
+            <h2>Recent Alerts</h2>
+            <div id="alert-container"></div>
+        </section>
+    </main>
+
+    <script>
+        const container = document.getElementById("alert-container");
+        const blinkCounter = document.getElementById("blink-count");
+        const yawnCounter = document.getElementById("yawn-count");
+        const criticalCounter = document.getElementById("critical-count");
+
+        let blinkTotal = 0;
+        let yawnTotal = 0;
+        let criticalTotal = 0;
+
+        // SSE connection for live alerts
+        const evtSource = new EventSource("/alert_stream");
+        evtSource.onmessage = function(e) {
+            const data = JSON.parse(e.data.replace(/'/g, '"'));
+
+            // Update counters
+            if (data.event === "eyes_closed") {
+                criticalTotal++;
+                blinkTotal++;
+            } else if (data.event === "yawn_detected") {
+                yawnTotal++;
+            }
+            blinkCounter.innerText = blinkTotal;
+            yawnCounter.innerText = yawnTotal;
+            criticalCounter.innerText = criticalTotal;
+
+            // Create alert card
+            const div = document.createElement("div");
+            div.className = "alert-card";
+            let borderColor = "#2196F3";
+            if (data.event === "eyes_closed") borderColor = "#e74c3c";
+            else if (data.event === "yawn_detected") borderColor = "#f1c40f";
+
+            div.style.borderLeft = `6px solid ${borderColor}`;
+            div.innerHTML = `
+                <h3>${data.event.replace("_"," ").toUpperCase()}</h3>
+                <p><strong>Time:</strong> ${data.timestamp}</p>
+                <p><strong>Location:</strong> ${data.location}</p>
+                ${data.image ? `<img src="data:image/jpeg;base64,${data.image}" class="alert-img">` : ''}
+            `;
+
+            if (data.event === "eyes_closed") div.classList.add("blink");
+
+            container.prepend(div);
+
+            // Keep only 10 recent alerts
+            if (container.children.length > 10) container.removeChild(container.lastChild);
+        };
+    </script>
+</body>
+</html>
